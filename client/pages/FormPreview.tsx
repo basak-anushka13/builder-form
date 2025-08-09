@@ -190,29 +190,45 @@ export default function FormPreview() {
     const answer = answers.find(a => a.questionId === question.id);
     const blankAnswers = answer?.data || {};
 
-    const renderTextWithBlanks = () => {
+    const renderClozeText = () => {
       let text = question.data.text || "";
       const blankRegex = /\[([^\]]+)\]/g;
+      const parts = text.split(blankRegex);
+      const elements = [];
       let blankIndex = 0;
-      
-      return text.replace(blankRegex, (match, content) => {
-        const currentIndex = blankIndex++;
-        return `<input type="text" class="inline-block min-w-[100px] border-b-2 border-blue-300 mx-1 px-2 py-1 bg-blue-50 rounded text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500" value="${blankAnswers[currentIndex] || ''}" data-blank-index="${currentIndex}" />`;
-      });
+
+      for (let i = 0; i < parts.length; i++) {
+        if (i % 2 === 0) {
+          // Regular text
+          elements.push(
+            <span key={i} className="text-lg">
+              {parts[i]}
+            </span>
+          );
+        } else {
+          // Blank space
+          elements.push(
+            <input
+              key={i}
+              type="text"
+              className="inline-block min-w-[100px] border-b-2 border-blue-300 mx-1 px-2 py-1 bg-blue-50 rounded text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={blankAnswers[blankIndex] || ''}
+              onChange={(e) => handleClozeBlankChange(question.id, blankIndex, e.target.value)}
+              placeholder="___"
+            />
+          );
+          blankIndex++;
+        }
+      }
+
+      return elements;
     };
 
     return (
       <div className="space-y-4">
-        <div 
-          className="text-lg leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: renderTextWithBlanks() }}
-          onChange={(e: any) => {
-            if (e.target.matches('input[data-blank-index]')) {
-              const blankIndex = parseInt(e.target.dataset.blankIndex);
-              handleClozeBlankChange(question.id, blankIndex, e.target.value);
-            }
-          }}
-        />
+        <div className="text-lg leading-relaxed">
+          {renderClozeText()}
+        </div>
       </div>
     );
   };
