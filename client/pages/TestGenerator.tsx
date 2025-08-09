@@ -130,8 +130,8 @@ export default function TestGenerator() {
           token: repoInfo.token,
           testCode: generatedCode.code,
           filename: generatedCode.filename,
-          testCaseTitle: testCase?.title || 'Automated Test Cases',
-          testCaseDescription: testCase?.description || 'AI-generated test cases for repository files',
+          testCaseTitle: currentTestCase?.title || 'Automated Test Cases',
+          testCaseDescription: currentTestCase?.description || 'AI-generated test cases for repository files',
         }),
       });
 
