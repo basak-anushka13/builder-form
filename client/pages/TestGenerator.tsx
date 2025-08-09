@@ -105,6 +105,7 @@ export default function TestGenerator() {
 
       const data: GenerateTestCodeResponse = await response.json();
       setGeneratedCode(data);
+      setCurrentTestCase(testCase);
       setCurrentStep('generate-code');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate test code');
