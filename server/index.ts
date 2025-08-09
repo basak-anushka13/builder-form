@@ -60,6 +60,7 @@ export function createServer() {
   // GitHub routes
   app.post("/api/github/analyze", analyzeFiles);
   app.post("/api/github/generate-code", generateTestCode);
+  app.post("/api/github/create-pr", createPullRequest);
 
   // Legacy demo route
   app.get("/api/demo", handleDemo);
