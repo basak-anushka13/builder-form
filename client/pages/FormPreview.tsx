@@ -8,50 +8,43 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CheckCircle, GripVertical, Loader2 } from "lucide-react";
 import { formAPI, responseAPI, Form, Question, Answer } from "@/services/api";
 
-interface Answer {
-  questionId: string;
-  type: string;
-  data: any;
-}
-
-interface CategorizeAnswer {
-  [item: string]: string; // item -> category
-}
-
-interface ClozeAnswer {
-  [blankId: string]: string;
-}
-
-interface ComprehensionAnswer {
-  [subQuestionId: string]: string;
-}
-
 export default function FormPreview() {
   const { id } = useParams();
   const [form, setForm] = useState<Form | null>(null);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
-      const savedForms = localStorage.getItem("forms");
-      if (savedForms) {
-        const forms = JSON.parse(savedForms);
-        const foundForm = forms.find((f: Form) => f.id === id);
-        if (foundForm) {
-          setForm(foundForm);
-          // Initialize answers
-          const initialAnswers: Answer[] = foundForm.questions.map((q: Question) => ({
-            questionId: q.id,
-            type: q.type,
-            data: getInitialAnswerData(q)
-          }));
-          setAnswers(initialAnswers);
-        }
-      }
+      loadForm(id);
     }
   }, [id]);
+
+  const loadForm = async (formId: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const formData = await formAPI.getFormById(formId);
+      setForm(formData);
+
+      // Initialize answers
+      const initialAnswers: Answer[] = formData.questions.map((q: Question) => ({
+        questionId: q.id,
+        type: q.type,
+        data: getInitialAnswerData(q)
+      }));
+      setAnswers(initialAnswers);
+    } catch (err) {
+      setError('Failed to load form. Please try again.');
+      console.error('Error loading form:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getInitialAnswerData = (question: Question) => {
     switch (question.type) {
