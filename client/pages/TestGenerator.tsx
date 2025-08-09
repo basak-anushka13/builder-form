@@ -34,6 +34,7 @@ export default function TestGenerator() {
   const [selectedFramework, setSelectedFramework] = useState<string>('jest');
   const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [generatedCode, setGeneratedCode] = useState<GenerateTestCodeResponse | null>(null);
+  const [currentTestCase, setCurrentTestCase] = useState<TestCase | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGeneratingCode, setIsGeneratingCode] = useState(false);
   const [generatingTestId, setGeneratingTestId] = useState<string>();
