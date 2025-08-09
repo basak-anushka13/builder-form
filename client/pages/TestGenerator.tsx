@@ -205,7 +205,7 @@ export default function TestGenerator() {
         </div>
 
         {/* Progress Steps */}
-        <Card className="overflow-hidden">
+        <Card className="overflow-hidden hover-lift">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               {(['connect', 'select-files', 'analyze', 'generate-code'] as Step[]).map((step, index) => {
