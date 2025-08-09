@@ -18,6 +18,7 @@ import {
   deleteResponse,
 } from "./routes/responses";
 import { analyzeFiles, generateTestCode } from "./routes/github";
+import { createPullRequest } from "./routes/pr";
 
 export function createServer() {
   const app = express();
