@@ -185,17 +185,23 @@ export default function TestGenerator() {
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex justify-center">
-            <div className="bg-white p-4 rounded-full shadow-lg">
+            <div className="bg-white p-4 rounded-full shadow-lg hover-lift">
               <TestTube className="h-12 w-12 text-blue-600" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-gray-900">
+          <h1 className="text-4xl font-bold text-gray-900 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             AI Test Case Generator
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Connect your GitHub repository and automatically generate comprehensive test cases
             for your code using AI-powered analysis.
           </p>
+          <div className="flex justify-center gap-2 text-sm text-gray-500">
+            <Badge variant="outline" className="bg-green-50 text-green-700">React</Badge>
+            <Badge variant="outline" className="bg-blue-50 text-blue-700">Python</Badge>
+            <Badge variant="outline" className="bg-purple-50 text-purple-700">Java</Badge>
+            <Badge variant="outline" className="bg-orange-50 text-orange-700">TypeScript</Badge>
+          </div>
         </div>
 
         {/* Progress Steps */}
