@@ -376,7 +376,7 @@ export default function TestGenerator() {
             <TestCodeDisplay
               testCode={generatedCode}
               onCreatePR={handleCreatePR}
-              canCreatePR={true}
+              canCreatePR={!!repoInfo?.token}
             />
           </div>
         )}
