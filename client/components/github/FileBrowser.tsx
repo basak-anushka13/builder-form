@@ -1,23 +1,23 @@
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Folder, 
-  File, 
-  Search, 
-  Filter, 
-  CheckSquare, 
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Folder,
+  File,
+  Search,
+  Filter,
+  CheckSquare,
   Square,
   Code,
   Loader2,
-  RefreshCw
-} from 'lucide-react';
-import { githubService, GitHubFile } from '@/services/github';
-import { cn } from '@/lib/utils';
+  RefreshCw,
+} from "lucide-react";
+import { githubService, GitHubFile } from "@/services/github";
+import { cn } from "@/lib/utils";
 
 interface FileBrowserProps {
   owner: string;
@@ -26,39 +26,48 @@ interface FileBrowserProps {
   selectedFiles: string[];
 }
 
-export default function FileBrowser({ owner, repo, onFilesSelect, selectedFiles }: FileBrowserProps) {
+export default function FileBrowser({
+  owner,
+  repo,
+  onFilesSelect,
+  selectedFiles,
+}: FileBrowserProps) {
   const [files, setFiles] = useState<GitHubFile[]>([]);
-  const [currentPath, setCurrentPath] = useState('');
+  const [currentPath, setCurrentPath] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [showTestableOnly, setShowTestableOnly] = useState(true);
   const [expandedDirs, setExpandedDirs] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    loadFiles('');
+    loadFiles("");
   }, [owner, repo]);
 
-  const loadFiles = async (path: string = '') => {
+  const loadFiles = async (path: string = "") => {
     setLoading(true);
-    setError('');
+    setError("");
     try {
-      const repoFiles = await githubService.getRepositoryFiles(owner, repo, path);
+      const repoFiles = await githubService.getRepositoryFiles(
+        owner,
+        repo,
+        path,
+      );
       setFiles(repoFiles);
       setCurrentPath(path);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load files');
+      setError(err instanceof Error ? err.message : "Failed to load files");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDirectoryClick = async (file: GitHubFile) => {
-    if (file.type === 'dir') {
+    if (file.type === "dir") {
       const newPath = file.path;
       if (expandedDirs.has(newPath)) {
         // Collapse directory
-        setExpandedDirs(prev => {
+        setExpandedDirs((prev) => {
           const next = new Set(prev);
           next.delete(newPath);
           return next;
@@ -67,16 +76,24 @@ export default function FileBrowser({ owner, repo, onFilesSelect, selectedFiles 
         // Expand directory
         try {
           setLoading(true);
-          const dirFiles = await githubService.getRepositoryFiles(owner, repo, newPath);
-          setExpandedDirs(prev => new Set(prev).add(newPath));
-          
+          const dirFiles = await githubService.getRepositoryFiles(
+            owner,
+            repo,
+            newPath,
+          );
+          setExpandedDirs((prev) => new Set(prev).add(newPath));
+
           // Add directory files to the main files list
-          setFiles(prev => {
-            const filtered = prev.filter(f => !f.path.startsWith(newPath + '/'));
+          setFiles((prev) => {
+            const filtered = prev.filter(
+              (f) => !f.path.startsWith(newPath + "/"),
+            );
             return [...filtered, ...dirFiles];
           });
         } catch (err) {
-          setError(err instanceof Error ? err.message : 'Failed to load directory');
+          setError(
+            err instanceof Error ? err.message : "Failed to load directory",
+          );
         } finally {
           setLoading(false);
         }
@@ -88,12 +105,14 @@ export default function FileBrowser({ owner, repo, onFilesSelect, selectedFiles 
     if (checked) {
       onFilesSelect([...selectedFiles, filePath]);
     } else {
-      onFilesSelect(selectedFiles.filter(f => f !== filePath));
+      onFilesSelect(selectedFiles.filter((f) => f !== filePath));
     }
   };
 
   const handleSelectAll = () => {
-    const testableFiles = getFilteredFiles().filter(f => f.type === 'file').map(f => f.path);
+    const testableFiles = getFilteredFiles()
+      .filter((f) => f.type === "file")
+      .map((f) => f.path);
     if (selectedFiles.length === testableFiles.length) {
       onFilesSelect([]);
     } else {
@@ -105,41 +124,45 @@ export default function FileBrowser({ owner, repo, onFilesSelect, selectedFiles 
     let filtered = files;
 
     if (showTestableOnly) {
-      filtered = filtered.filter(file => 
-        file.type === 'dir' || githubService.isTestableFile(file.name)
+      filtered = filtered.filter(
+        (file) =>
+          file.type === "dir" || githubService.isTestableFile(file.name),
       );
     }
 
     if (searchTerm) {
-      filtered = filtered.filter(file =>
-        file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        file.path.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (file) =>
+          file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          file.path.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
     return filtered.sort((a, b) => {
       if (a.type !== b.type) {
-        return a.type === 'dir' ? -1 : 1;
+        return a.type === "dir" ? -1 : 1;
       }
       return a.name.localeCompare(b.name);
     });
   };
 
   const getFileIcon = (file: GitHubFile) => {
-    if (file.type === 'dir') {
+    if (file.type === "dir") {
       return <Folder className="h-4 w-4 text-blue-500" />;
     }
     return <File className="h-4 w-4 text-gray-500" />;
   };
 
   const getFileExtension = (filename: string) => {
-    const ext = filename.split('.').pop()?.toLowerCase();
-    return ext ? `.${ext}` : '';
+    const ext = filename.split(".").pop()?.toLowerCase();
+    return ext ? `.${ext}` : "";
   };
 
   const filteredFiles = getFilteredFiles();
-  const testableFiles = filteredFiles.filter(f => f.type === 'file');
-  const allSelected = testableFiles.length > 0 && testableFiles.every(f => selectedFiles.includes(f.path));
+  const testableFiles = filteredFiles.filter((f) => f.type === "file");
+  const allSelected =
+    testableFiles.length > 0 &&
+    testableFiles.every((f) => selectedFiles.includes(f.path));
 
   return (
     <Card className="w-full">
@@ -163,7 +186,7 @@ export default function FileBrowser({ owner, repo, onFilesSelect, selectedFiles 
             Refresh
           </Button>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -174,14 +197,14 @@ export default function FileBrowser({ owner, repo, onFilesSelect, selectedFiles 
               className="pl-10"
             />
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowTestableOnly(!showTestableOnly)}
               className={cn(
-                showTestableOnly && "bg-blue-50 border-blue-200 text-blue-700"
+                showTestableOnly && "bg-blue-50 border-blue-200 text-blue-700",
               )}
             >
               <Filter className="h-4 w-4 mr-1" />
@@ -210,7 +233,7 @@ export default function FileBrowser({ owner, repo, onFilesSelect, selectedFiles 
                 </>
               )}
             </Button>
-            
+
             <Badge variant="secondary">
               {selectedFiles.length} of {testableFiles.length} selected
             </Badge>
@@ -231,7 +254,7 @@ export default function FileBrowser({ owner, repo, onFilesSelect, selectedFiles 
             <Button
               variant="link"
               size="sm"
-              onClick={() => loadFiles('')}
+              onClick={() => loadFiles("")}
               className="ml-2 h-auto p-0"
             >
               Back to root
@@ -247,7 +270,7 @@ export default function FileBrowser({ owner, repo, onFilesSelect, selectedFiles 
             </div>
           ) : filteredFiles.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              {searchTerm ? 'No files match your search' : 'No files found'}
+              {searchTerm ? "No files match your search" : "No files found"}
             </div>
           ) : (
             filteredFiles.map((file) => (
@@ -255,28 +278,30 @@ export default function FileBrowser({ owner, repo, onFilesSelect, selectedFiles 
                 key={file.path}
                 className={cn(
                   "flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 border border-transparent",
-                  file.type === 'file' && selectedFiles.includes(file.path) && 
-                  "bg-blue-50 border-blue-200"
+                  file.type === "file" &&
+                    selectedFiles.includes(file.path) &&
+                    "bg-blue-50 border-blue-200",
                 )}
               >
-                {file.type === 'file' && githubService.isTestableFile(file.name) && (
-                  <Checkbox
-                    checked={selectedFiles.includes(file.path)}
-                    onCheckedChange={(checked) => 
-                      handleFileSelect(file.path, checked as boolean)
-                    }
-                  />
-                )}
-                
+                {file.type === "file" &&
+                  githubService.isTestableFile(file.name) && (
+                    <Checkbox
+                      checked={selectedFiles.includes(file.path)}
+                      onCheckedChange={(checked) =>
+                        handleFileSelect(file.path, checked as boolean)
+                      }
+                    />
+                  )}
+
                 <button
                   onClick={() => handleDirectoryClick(file)}
                   className="flex items-center gap-2 flex-1 text-left"
-                  disabled={file.type === 'file'}
+                  disabled={file.type === "file"}
                 >
                   {getFileIcon(file)}
                   <span className="flex-1 truncate">{file.name}</span>
-                  
-                  {file.type === 'file' && (
+
+                  {file.type === "file" && (
                     <Badge variant="outline" className="text-xs">
                       {getFileExtension(file.name)}
                     </Badge>

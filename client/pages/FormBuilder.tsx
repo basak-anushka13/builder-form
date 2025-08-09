@@ -75,7 +75,9 @@ export default function FormBuilder() {
       setForm(savedForm);
 
       // Show success message with navigation hint
-      setError("✅ Form saved successfully! Click 'Back' to view all your saved forms.");
+      setError(
+        "✅ Form saved successfully! Click 'Back' to view all your saved forms.",
+      );
       setTimeout(() => {
         setError(null);
       }, 4000);
@@ -205,12 +207,18 @@ export default function FormBuilder() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
-          <div className={`border rounded-lg p-4 mb-6 ${
-            error.startsWith('✅')
-              ? 'bg-green-50 border-green-200'
-              : 'bg-red-50 border-red-200'
-          }`}>
-            <p className={error.startsWith('✅') ? 'text-green-800' : 'text-red-800'}>
+          <div
+            className={`border rounded-lg p-4 mb-6 ${
+              error.startsWith("✅")
+                ? "bg-green-50 border-green-200"
+                : "bg-red-50 border-red-200"
+            }`}
+          >
+            <p
+              className={
+                error.startsWith("✅") ? "text-green-800" : "text-red-800"
+              }
+            >
               {error}
             </p>
           </div>

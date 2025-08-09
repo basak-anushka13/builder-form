@@ -25,37 +25,41 @@ export const createPullRequest: RequestHandler = async (req, res) => {
     } = CreatePRSchema.parse(req.body);
 
     // GitHub API endpoints
-    const githubAPI = 'https://api.github.com';
+    const githubAPI = "https://api.github.com";
     const headers = {
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'User-Agent': 'TestCaseGenerator/1.0',
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github.v3+json",
+      "User-Agent": "TestCaseGenerator/1.0",
+      "Content-Type": "application/json",
     };
 
     // 1. Get the default branch reference
     const repoResponse = await fetch(
       `${githubAPI}/repos/${repository.owner}/${repository.repo}`,
-      { headers }
+      { headers },
     );
-    
+
     if (!repoResponse.ok) {
-      throw new Error(`Failed to get repository info: ${repoResponse.statusText}`);
+      throw new Error(
+        `Failed to get repository info: ${repoResponse.statusText}`,
+      );
     }
-    
+
     const repoData = await repoResponse.json();
     const defaultBranch = repoData.default_branch;
 
     // 2. Get the SHA of the default branch
     const refResponse = await fetch(
       `${githubAPI}/repos/${repository.owner}/${repository.repo}/git/refs/heads/${defaultBranch}`,
-      { headers }
+      { headers },
     );
-    
+
     if (!refResponse.ok) {
-      throw new Error(`Failed to get branch reference: ${refResponse.statusText}`);
+      throw new Error(
+        `Failed to get branch reference: ${refResponse.statusText}`,
+      );
     }
-    
+
     const refData = await refResponse.json();
     const baseSha = refData.object.sha;
 
@@ -64,30 +68,32 @@ export const createPullRequest: RequestHandler = async (req, res) => {
     const createBranchResponse = await fetch(
       `${githubAPI}/repos/${repository.owner}/${repository.repo}/git/refs`,
       {
-        method: 'POST',
+        method: "POST",
         headers,
         body: JSON.stringify({
           ref: `refs/heads/${branchName}`,
           sha: baseSha,
         }),
-      }
+      },
     );
 
     if (!createBranchResponse.ok) {
-      throw new Error(`Failed to create branch: ${createBranchResponse.statusText}`);
+      throw new Error(
+        `Failed to create branch: ${createBranchResponse.statusText}`,
+      );
     }
 
     // 4. Create/update the test file
-    const encodedContent = Buffer.from(testCode).toString('base64');
-    
+    const encodedContent = Buffer.from(testCode).toString("base64");
+
     // Check if file already exists
     let existingFileSha: string | undefined;
     try {
       const existingFileResponse = await fetch(
         `${githubAPI}/repos/${repository.owner}/${repository.repo}/contents/${filename}?ref=${branchName}`,
-        { headers }
+        { headers },
       );
-      
+
       if (existingFileResponse.ok) {
         const existingFileData = await existingFileResponse.json();
         existingFileSha = existingFileData.sha;
@@ -99,7 +105,7 @@ export const createPullRequest: RequestHandler = async (req, res) => {
     const createFileResponse = await fetch(
       `${githubAPI}/repos/${repository.owner}/${repository.repo}/contents/${filename}`,
       {
-        method: 'PUT',
+        method: "PUT",
         headers,
         body: JSON.stringify({
           message: `Add automated test cases: ${testCaseTitle}`,
@@ -107,12 +113,14 @@ export const createPullRequest: RequestHandler = async (req, res) => {
           branch: branchName,
           ...(existingFileSha && { sha: existingFileSha }),
         }),
-      }
+      },
     );
 
     if (!createFileResponse.ok) {
       const errorText = await createFileResponse.text();
-      throw new Error(`Failed to create file: ${createFileResponse.statusText} - ${errorText}`);
+      throw new Error(
+        `Failed to create file: ${createFileResponse.statusText} - ${errorText}`,
+      );
     }
 
     // 5. Create the pull request
@@ -150,7 +158,7 @@ npm test
     const createPRResponse = await fetch(
       `${githubAPI}/repos/${repository.owner}/${repository.repo}/pulls`,
       {
-        method: 'POST',
+        method: "POST",
         headers,
         body: JSON.stringify({
           title: prTitle,
@@ -158,12 +166,14 @@ npm test
           head: branchName,
           base: defaultBranch,
         }),
-      }
+      },
     );
 
     if (!createPRResponse.ok) {
       const errorText = await createPRResponse.text();
-      throw new Error(`Failed to create pull request: ${createPRResponse.statusText} - ${errorText}`);
+      throw new Error(
+        `Failed to create pull request: ${createPRResponse.statusText} - ${errorText}`,
+      );
     }
 
     const prData = await createPRResponse.json();
@@ -177,11 +187,13 @@ npm test
         branch: branchName,
       },
     });
-
   } catch (error) {
-    console.error('Error creating pull request:', error);
+    console.error("Error creating pull request:", error);
     res.status(400).json({
-      error: error instanceof Error ? error.message : 'Failed to create pull request',
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to create pull request",
     });
   }
 };

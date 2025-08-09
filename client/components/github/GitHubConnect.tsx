@@ -1,38 +1,51 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, Github, Key } from 'lucide-react';
-import { githubService } from '@/services/github';
-import DemoMode from './DemoMode';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Loader2, Github, Key } from "lucide-react";
+import { githubService } from "@/services/github";
+import DemoMode from "./DemoMode";
 
 interface GitHubConnectProps {
-  onConnect: (repoInfo: { owner: string; repo: string; token?: string }) => void;
+  onConnect: (repoInfo: {
+    owner: string;
+    repo: string;
+    token?: string;
+  }) => void;
   onStartDemo?: () => void;
 }
 
-export default function GitHubConnect({ onConnect, onStartDemo }: GitHubConnectProps) {
-  const [repoUrl, setRepoUrl] = useState('');
-  const [token, setToken] = useState('');
+export default function GitHubConnect({
+  onConnect,
+  onStartDemo,
+}: GitHubConnectProps) {
+  const [repoUrl, setRepoUrl] = useState("");
+  const [token, setToken] = useState("");
   const [isConnecting, setIsConnecting] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleConnect = async () => {
     if (!repoUrl.trim()) {
-      setError('Please enter a repository URL');
+      setError("Please enter a repository URL");
       return;
     }
 
     setIsConnecting(true);
-    setError('');
+    setError("");
 
     try {
       const parsed = githubService.parseRepositoryUrl(repoUrl.trim());
       if (!parsed) {
-        throw new Error('Invalid repository URL format');
+        throw new Error("Invalid repository URL format");
       }
 
       if (token.trim()) {
@@ -41,21 +54,23 @@ export default function GitHubConnect({ onConnect, onStartDemo }: GitHubConnectP
 
       // Test the connection by fetching repository info
       await githubService.getRepositoryInfo(parsed.owner, parsed.repo);
-      
+
       onConnect({
         owner: parsed.owner,
         repo: parsed.repo,
         token: token.trim() || undefined,
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to connect to repository');
+      setError(
+        err instanceof Error ? err.message : "Failed to connect to repository",
+      );
     } finally {
       setIsConnecting(false);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleConnect();
     }
   };
@@ -68,10 +83,11 @@ export default function GitHubConnect({ onConnect, onStartDemo }: GitHubConnectP
         </div>
         <CardTitle className="text-2xl">Connect to GitHub Repository</CardTitle>
         <CardDescription>
-          Enter your GitHub repository URL to analyze files and generate test cases
+          Enter your GitHub repository URL to analyze files and generate test
+          cases
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="repo-url">Repository URL</Label>
@@ -104,10 +120,10 @@ export default function GitHubConnect({ onConnect, onStartDemo }: GitHubConnectP
             disabled={isConnecting}
           />
           <p className="text-sm text-muted-foreground">
-            Required for private repositories or to increase rate limits. 
-            <a 
-              href="https://github.com/settings/tokens" 
-              target="_blank" 
+            Required for private repositories or to increase rate limits.
+            <a
+              href="https://github.com/settings/tokens"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline ml-1"
             >
@@ -122,8 +138,8 @@ export default function GitHubConnect({ onConnect, onStartDemo }: GitHubConnectP
           </Alert>
         )}
 
-        <Button 
-          onClick={handleConnect} 
+        <Button
+          onClick={handleConnect}
           disabled={isConnecting || !repoUrl.trim()}
           className="w-full"
           size="lg"
@@ -143,7 +159,9 @@ export default function GitHubConnect({ onConnect, onStartDemo }: GitHubConnectP
 
         <div className="space-y-4">
           <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h4 className="font-medium text-blue-900 mb-2">What this tool can do:</h4>
+            <h4 className="font-medium text-blue-900 mb-2">
+              What this tool can do:
+            </h4>
             <ul className="text-sm text-blue-800 space-y-1">
               <li>• Browse and analyze your repository files</li>
               <li>• Generate test cases for different testing frameworks</li>
@@ -154,19 +172,36 @@ export default function GitHubConnect({ onConnect, onStartDemo }: GitHubConnectP
           </div>
 
           <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-            <h4 className="font-medium text-green-900 mb-2">Try these demo repositories:</h4>
+            <h4 className="font-medium text-green-900 mb-2">
+              Try these demo repositories:
+            </h4>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
                 <code className="text-green-800">facebook/react</code>
-                <Badge variant="outline" className="text-xs bg-green-100 text-green-700">React</Badge>
+                <Badge
+                  variant="outline"
+                  className="text-xs bg-green-100 text-green-700"
+                >
+                  React
+                </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <code className="text-green-800">microsoft/vscode</code>
-                <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700">TypeScript</Badge>
+                <Badge
+                  variant="outline"
+                  className="text-xs bg-blue-100 text-blue-700"
+                >
+                  TypeScript
+                </Badge>
               </div>
               <div className="flex items-center justify-between">
                 <code className="text-green-800">django/django</code>
-                <Badge variant="outline" className="text-xs bg-yellow-100 text-yellow-700">Python</Badge>
+                <Badge
+                  variant="outline"
+                  className="text-xs bg-yellow-100 text-yellow-700"
+                >
+                  Python
+                </Badge>
               </div>
             </div>
           </div>
@@ -179,7 +214,9 @@ export default function GitHubConnect({ onConnect, onStartDemo }: GitHubConnectP
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or</span>
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or
+                </span>
               </div>
             </div>
 

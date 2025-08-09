@@ -31,11 +31,16 @@ const GenerateTestCodeSchema = z.object({
 
 export const analyzeFiles: RequestHandler = async (req, res) => {
   try {
-    const validatedData = AnalyzeFilesSchema.parse(req.body) as AnalyzeFilesRequest;
-    
+    const validatedData = AnalyzeFilesSchema.parse(
+      req.body,
+    ) as AnalyzeFilesRequest;
+
     // Simulate AI analysis - In a real implementation, this would call an AI service
-    const testCases: TestCase[] = generateMockTestCases(validatedData.files, validatedData.framework);
-    
+    const testCases: TestCase[] = generateMockTestCases(
+      validatedData.files,
+      validatedData.framework,
+    );
+
     const response: AnalyzeFilesResponse = {
       testCases,
       totalFiles: validatedData.files.length,
@@ -44,166 +49,197 @@ export const analyzeFiles: RequestHandler = async (req, res) => {
 
     res.json(response);
   } catch (error) {
-    console.error('Error analyzing files:', error);
-    res.status(400).json({ 
-      error: error instanceof Error ? error.message : 'Failed to analyze files' 
+    console.error("Error analyzing files:", error);
+    res.status(400).json({
+      error: error instanceof Error ? error.message : "Failed to analyze files",
     });
   }
 };
 
 export const generateTestCode: RequestHandler = async (req, res) => {
   try {
-    const validatedData = GenerateTestCodeSchema.parse(req.body) as GenerateTestCodeRequest;
-    
+    const validatedData = GenerateTestCodeSchema.parse(
+      req.body,
+    ) as GenerateTestCodeRequest;
+
     // Simulate AI code generation - In a real implementation, this would call an AI service
-    const response: GenerateTestCodeResponse = generateMockTestCode(validatedData);
-    
+    const response: GenerateTestCodeResponse =
+      generateMockTestCode(validatedData);
+
     res.json(response);
   } catch (error) {
-    console.error('Error generating test code:', error);
-    res.status(400).json({ 
-      error: error instanceof Error ? error.message : 'Failed to generate test code' 
+    console.error("Error generating test code:", error);
+    res.status(400).json({
+      error:
+        error instanceof Error ? error.message : "Failed to generate test code",
     });
   }
 };
 
-function generateMockTestCases(files: string[], framework?: string): TestCase[] {
+function generateMockTestCases(
+  files: string[],
+  framework?: string,
+): TestCase[] {
   const testCases: TestCase[] = [];
-  
+
   // Generate different types of test cases based on file types
   files.forEach((file, index) => {
-    const ext = file.split('.').pop()?.toLowerCase();
-    const filename = file.split('/').pop() || file;
-    
-    if (ext === 'js' || ext === 'jsx' || ext === 'ts' || ext === 'tsx') {
+    const ext = file.split(".").pop()?.toLowerCase();
+    const filename = file.split("/").pop() || file;
+
+    if (ext === "js" || ext === "jsx" || ext === "ts" || ext === "tsx") {
       testCases.push({
         id: `tc-${index}-unit`,
         title: `Unit Tests for ${filename}`,
         description: `Test individual functions and components in ${filename}`,
-        framework: (framework as any) || 'jest',
-        testType: 'unit',
+        framework: (framework as any) || "jest",
+        testType: "unit",
         files: [file],
-        priority: 'high',
+        priority: "high",
       });
-      
-      if (ext === 'jsx' || ext === 'tsx') {
+
+      if (ext === "jsx" || ext === "tsx") {
         testCases.push({
           id: `tc-${index}-integration`,
           title: `Component Integration Tests for ${filename}`,
           description: `Test React component interactions and props in ${filename}`,
-          framework: (framework as any) || 'jest',
-          testType: 'integration',
+          framework: (framework as any) || "jest",
+          testType: "integration",
           files: [file],
-          priority: 'medium',
+          priority: "medium",
         });
       }
     }
-    
-    if (ext === 'py') {
+
+    if (ext === "py") {
       testCases.push({
         id: `tc-${index}-unit`,
         title: `Unit Tests for ${filename}`,
         description: `Test functions and classes in ${filename}`,
-        framework: 'pytest',
-        testType: 'unit',
+        framework: "pytest",
+        testType: "unit",
         files: [file],
-        priority: 'high',
+        priority: "high",
       });
     }
-    
-    if (ext === 'java') {
+
+    if (ext === "java") {
       testCases.push({
         id: `tc-${index}-unit`,
         title: `JUnit Tests for ${filename}`,
         description: `Test methods and classes in ${filename}`,
-        framework: 'junit',
-        testType: 'unit',
+        framework: "junit",
+        testType: "unit",
         files: [file],
-        priority: 'high',
+        priority: "high",
       });
     }
   });
-  
+
   // Add some integration test cases for multiple files
   if (files.length > 1) {
     testCases.push({
-      id: 'tc-integration-all',
-      title: 'Cross-File Integration Tests',
-      description: 'Test interactions between multiple files and modules',
-      framework: (framework as any) || 'jest',
-      testType: 'integration',
+      id: "tc-integration-all",
+      title: "Cross-File Integration Tests",
+      description: "Test interactions between multiple files and modules",
+      framework: (framework as any) || "jest",
+      testType: "integration",
       files: files.slice(0, Math.min(3, files.length)),
-      priority: 'medium',
+      priority: "medium",
     });
   }
-  
+
   // Add E2E test case if frontend files are present
-  const hasFrontendFiles = files.some(file => 
-    file.includes('component') || file.includes('page') || 
-    file.endsWith('.jsx') || file.endsWith('.tsx') || file.endsWith('.vue')
+  const hasFrontendFiles = files.some(
+    (file) =>
+      file.includes("component") ||
+      file.includes("page") ||
+      file.endsWith(".jsx") ||
+      file.endsWith(".tsx") ||
+      file.endsWith(".vue"),
   );
-  
+
   if (hasFrontendFiles) {
     testCases.push({
-      id: 'tc-e2e-user-flow',
-      title: 'End-to-End User Flow Tests',
-      description: 'Test complete user workflows and interactions',
-      framework: 'cypress',
-      testType: 'e2e',
-      files: files.filter(file => 
-        file.endsWith('.jsx') || file.endsWith('.tsx') || file.endsWith('.vue')
+      id: "tc-e2e-user-flow",
+      title: "End-to-End User Flow Tests",
+      description: "Test complete user workflows and interactions",
+      framework: "cypress",
+      testType: "e2e",
+      files: files.filter(
+        (file) =>
+          file.endsWith(".jsx") ||
+          file.endsWith(".tsx") ||
+          file.endsWith(".vue"),
       ),
-      priority: 'low',
+      priority: "low",
     });
   }
-  
+
   return testCases;
 }
 
-function generateMockTestCode(request: GenerateTestCodeRequest): GenerateTestCodeResponse {
+function generateMockTestCode(
+  request: GenerateTestCodeRequest,
+): GenerateTestCodeResponse {
   const { framework, files, testCaseId } = request;
-  
-  let code = '';
+
+  let code = "";
   let dependencies: string[] = [];
-  let setupInstructions = '';
-  let filename = '';
-  
+  let setupInstructions = "";
+  let filename = "";
+
   switch (framework.toLowerCase()) {
-    case 'jest':
-    case 'vitest':
+    case "jest":
+    case "vitest":
       code = generateJestTestCode(files, testCaseId);
-      dependencies = ['@testing-library/react', '@testing-library/jest-dom', 'jest'];
-      filename = `${files[0].replace(/\.[^/.]+$/, '')}.test.js`;
-      setupInstructions = `Install dependencies: npm install --save-dev ${dependencies.join(' ')}`;
+      dependencies = [
+        "@testing-library/react",
+        "@testing-library/jest-dom",
+        "jest",
+      ];
+      filename = `${files[0].replace(/\.[^/.]+$/, "")}.test.js`;
+      setupInstructions = `Install dependencies: npm install --save-dev ${dependencies.join(" ")}`;
       break;
-      
-    case 'cypress':
+
+    case "cypress":
       code = generateCypressTestCode(files, testCaseId);
-      dependencies = ['cypress'];
-      filename = `cypress/e2e/${files[0].split('/').pop()?.replace(/\.[^/.]+$/, '')}.cy.js`;
-      setupInstructions = 'Install Cypress: npm install --save-dev cypress\nRun: npx cypress open';
+      dependencies = ["cypress"];
+      filename = `cypress/e2e/${files[0]
+        .split("/")
+        .pop()
+        ?.replace(/\.[^/.]+$/, "")}.cy.js`;
+      setupInstructions =
+        "Install Cypress: npm install --save-dev cypress\nRun: npx cypress open";
       break;
-      
-    case 'pytest':
+
+    case "pytest":
       code = generatePytestTestCode(files, testCaseId);
-      dependencies = ['pytest', 'pytest-mock'];
-      filename = `test_${files[0].split('/').pop()?.replace(/\.[^/.]+$/, '')}.py`;
-      setupInstructions = 'Install pytest: pip install pytest pytest-mock';
+      dependencies = ["pytest", "pytest-mock"];
+      filename = `test_${files[0]
+        .split("/")
+        .pop()
+        ?.replace(/\.[^/.]+$/, "")}.py`;
+      setupInstructions = "Install pytest: pip install pytest pytest-mock";
       break;
-      
-    case 'junit':
+
+    case "junit":
       code = generateJUnitTestCode(files, testCaseId);
-      dependencies = ['junit-jupiter-engine', 'junit-jupiter-api'];
-      filename = `${files[0].split('/').pop()?.replace(/\.[^/.]+$/, '')}Test.java`;
-      setupInstructions = 'Add JUnit 5 dependency to your pom.xml or build.gradle';
+      dependencies = ["junit-jupiter-engine", "junit-jupiter-api"];
+      filename = `${files[0]
+        .split("/")
+        .pop()
+        ?.replace(/\.[^/.]+$/, "")}Test.java`;
+      setupInstructions =
+        "Add JUnit 5 dependency to your pom.xml or build.gradle";
       break;
-      
+
     default:
       code = generateGenericTestCode(files, testCaseId, framework);
       dependencies = [framework];
-      filename = `${files[0].replace(/\.[^/.]+$/, '')}.test.js`;
+      filename = `${files[0].replace(/\.[^/.]+$/, "")}.test.js`;
   }
-  
+
   return {
     code,
     dependencies,
@@ -214,8 +250,12 @@ function generateMockTestCode(request: GenerateTestCodeRequest): GenerateTestCod
 
 function generateJestTestCode(files: string[], testCaseId: string): string {
   const mainFile = files[0];
-  const componentName = mainFile.split('/').pop()?.replace(/\.[^/.]+$/, '') || 'Component';
-  
+  const componentName =
+    mainFile
+      .split("/")
+      .pop()
+      ?.replace(/\.[^/.]+$/, "") || "Component";
+
   return `import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ${componentName} from './${componentName}';
@@ -276,8 +316,12 @@ function generateCypressTestCode(files: string[], testCaseId: string): string {
 
 function generatePytestTestCode(files: string[], testCaseId: string): string {
   const mainFile = files[0];
-  const moduleName = mainFile.split('/').pop()?.replace(/\.[^/.]+$/, '') || 'module';
-  
+  const moduleName =
+    mainFile
+      .split("/")
+      .pop()
+      ?.replace(/\.[^/.]+$/, "") || "module";
+
   return `import pytest
 from unittest.mock import Mock, patch
 from ${moduleName} import *
@@ -314,8 +358,12 @@ class Test${moduleName.charAt(0).toUpperCase() + moduleName.slice(1)}:
 
 function generateJUnitTestCode(files: string[], testCaseId: string): string {
   const mainFile = files[0];
-  const className = mainFile.split('/').pop()?.replace(/\.[^/.]+$/, '') || 'TestClass';
-  
+  const className =
+    mainFile
+      .split("/")
+      .pop()
+      ?.replace(/\.[^/.]+$/, "") || "TestClass";
+
   return `import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
@@ -370,10 +418,14 @@ class ${className}Test {
 }`;
 }
 
-function generateGenericTestCode(files: string[], testCaseId: string, framework: string): string {
+function generateGenericTestCode(
+  files: string[],
+  testCaseId: string,
+  framework: string,
+): string {
   const mainFile = files[0];
-  const fileName = mainFile.split('/').pop() || 'file';
-  
+  const fileName = mainFile.split("/").pop() || "file";
+
   return `// ${framework} test for ${fileName}
 // Generated test case ID: ${testCaseId}
 

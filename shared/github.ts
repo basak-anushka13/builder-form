@@ -8,10 +8,17 @@ export interface TestCase {
   id: string;
   title: string;
   description: string;
-  framework: 'jest' | 'vitest' | 'cypress' | 'selenium' | 'junit' | 'pytest' | 'mocha';
-  testType: 'unit' | 'integration' | 'e2e';
+  framework:
+    | "jest"
+    | "vitest"
+    | "cypress"
+    | "selenium"
+    | "junit"
+    | "pytest"
+    | "mocha";
+  testType: "unit" | "integration" | "e2e";
   files: string[];
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
 }
 
 export interface TestCaseCode {

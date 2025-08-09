@@ -1,25 +1,35 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
-  TestTube, 
-  ArrowRight, 
-  Loader2, 
-  CheckCircle, 
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  TestTube,
+  ArrowRight,
+  Loader2,
+  CheckCircle,
   RefreshCw,
   Github,
-  Sparkles
-} from 'lucide-react';
-import GitHubConnect from '@/components/github/GitHubConnect';
-import FileBrowser from '@/components/github/FileBrowser';
-import TestCaseSummary from '@/components/github/TestCaseSummary';
-import TestCodeDisplay from '@/components/github/TestCodeDisplay';
-import { TestCase, GenerateTestCodeResponse, AnalyzeFilesResponse } from '@shared/github';
+  Sparkles,
+} from "lucide-react";
+import GitHubConnect from "@/components/github/GitHubConnect";
+import FileBrowser from "@/components/github/FileBrowser";
+import TestCaseSummary from "@/components/github/TestCaseSummary";
+import TestCodeDisplay from "@/components/github/TestCodeDisplay";
+import {
+  TestCase,
+  GenerateTestCodeResponse,
+  AnalyzeFilesResponse,
+} from "@shared/github";
 
-type Step = 'connect' | 'select-files' | 'analyze' | 'generate-code';
+type Step = "connect" | "select-files" | "analyze" | "generate-code";
 
 interface RepoInfo {
   owner: string;
@@ -28,37 +38,38 @@ interface RepoInfo {
 }
 
 export default function TestGenerator() {
-  const [currentStep, setCurrentStep] = useState<Step>('connect');
+  const [currentStep, setCurrentStep] = useState<Step>("connect");
   const [repoInfo, setRepoInfo] = useState<RepoInfo | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
-  const [selectedFramework, setSelectedFramework] = useState<string>('jest');
+  const [selectedFramework, setSelectedFramework] = useState<string>("jest");
   const [testCases, setTestCases] = useState<TestCase[]>([]);
-  const [generatedCode, setGeneratedCode] = useState<GenerateTestCodeResponse | null>(null);
+  const [generatedCode, setGeneratedCode] =
+    useState<GenerateTestCodeResponse | null>(null);
   const [currentTestCase, setCurrentTestCase] = useState<TestCase | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGeneratingCode, setIsGeneratingCode] = useState(false);
   const [generatingTestId, setGeneratingTestId] = useState<string>();
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleRepoConnect = (repo: RepoInfo) => {
     setRepoInfo(repo);
-    setCurrentStep('select-files');
-    setError('');
+    setCurrentStep("select-files");
+    setError("");
   };
 
   const handleAnalyzeFiles = async () => {
     if (!repoInfo || selectedFiles.length === 0) {
-      setError('Please select files to analyze');
+      setError("Please select files to analyze");
       return;
     }
 
     setIsAnalyzing(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('/api/github/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/github/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           repository: repoInfo,
           files: selectedFiles,
@@ -72,9 +83,9 @@ export default function TestGenerator() {
 
       const data: AnalyzeFilesResponse = await response.json();
       setTestCases(data.testCases);
-      setCurrentStep('analyze');
+      setCurrentStep("analyze");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to analyze files');
+      setError(err instanceof Error ? err.message : "Failed to analyze files");
     } finally {
       setIsAnalyzing(false);
     }
@@ -85,12 +96,12 @@ export default function TestGenerator() {
 
     setIsGeneratingCode(true);
     setGeneratingTestId(testCase.id);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('/api/github/generate-code', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/github/generate-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           testCaseId: testCase.id,
           framework: testCase.framework,
@@ -106,9 +117,11 @@ export default function TestGenerator() {
       const data: GenerateTestCodeResponse = await response.json();
       setGeneratedCode(data);
       setCurrentTestCase(testCase);
-      setCurrentStep('generate-code');
+      setCurrentStep("generate-code");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate test code');
+      setError(
+        err instanceof Error ? err.message : "Failed to generate test code",
+      );
     } finally {
       setIsGeneratingCode(false);
       setGeneratingTestId(undefined);
@@ -117,21 +130,23 @@ export default function TestGenerator() {
 
   const handleCreatePR = async () => {
     if (!repoInfo || !generatedCode || !repoInfo.token) {
-      setError('GitHub token is required to create a pull request');
+      setError("GitHub token is required to create a pull request");
       return;
     }
 
     try {
-      const response = await fetch('/api/github/create-pr', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/github/create-pr", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           repository: { owner: repoInfo.owner, repo: repoInfo.repo },
           token: repoInfo.token,
           testCode: generatedCode.code,
           filename: generatedCode.filename,
-          testCaseTitle: currentTestCase?.title || 'Automated Test Cases',
-          testCaseDescription: currentTestCase?.description || 'AI-generated test cases for repository files',
+          testCaseTitle: currentTestCase?.title || "Automated Test Cases",
+          testCaseDescription:
+            currentTestCase?.description ||
+            "AI-generated test cases for repository files",
         }),
       });
 
@@ -142,41 +157,55 @@ export default function TestGenerator() {
       const result = await response.json();
 
       // Show success message and open PR
-      alert(`Pull request created successfully! PR #${result.pullRequest.number}`);
-      window.open(result.pullRequest.url, '_blank');
+      alert(
+        `Pull request created successfully! PR #${result.pullRequest.number}`,
+      );
+      window.open(result.pullRequest.url, "_blank");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create pull request');
+      setError(
+        err instanceof Error ? err.message : "Failed to create pull request",
+      );
     }
   };
 
   const handleReset = () => {
-    setCurrentStep('connect');
+    setCurrentStep("connect");
     setRepoInfo(null);
     setSelectedFiles([]);
     setTestCases([]);
     setGeneratedCode(null);
     setCurrentTestCase(null);
-    setError('');
+    setError("");
   };
 
   const getStepNumber = (step: Step): number => {
-    const steps: Step[] = ['connect', 'select-files', 'analyze', 'generate-code'];
+    const steps: Step[] = [
+      "connect",
+      "select-files",
+      "analyze",
+      "generate-code",
+    ];
     return steps.indexOf(step) + 1;
   };
 
   const isStepCompleted = (step: Step): boolean => {
-    const steps: Step[] = ['connect', 'select-files', 'analyze', 'generate-code'];
+    const steps: Step[] = [
+      "connect",
+      "select-files",
+      "analyze",
+      "generate-code",
+    ];
     return steps.indexOf(step) < steps.indexOf(currentStep);
   };
 
   const frameworks = [
-    { value: 'jest', label: 'Jest' },
-    { value: 'vitest', label: 'Vitest' },
-    { value: 'cypress', label: 'Cypress' },
-    { value: 'selenium', label: 'Selenium' },
-    { value: 'junit', label: 'JUnit' },
-    { value: 'pytest', label: 'Pytest' },
-    { value: 'mocha', label: 'Mocha' },
+    { value: "jest", label: "Jest" },
+    { value: "vitest", label: "Vitest" },
+    { value: "cypress", label: "Cypress" },
+    { value: "selenium", label: "Selenium" },
+    { value: "junit", label: "JUnit" },
+    { value: "pytest", label: "Pytest" },
+    { value: "mocha", label: "Mocha" },
   ];
 
   return (
@@ -193,14 +222,22 @@ export default function TestGenerator() {
             AI Test Case Generator
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Connect your GitHub repository and automatically generate comprehensive test cases
-            for your code using AI-powered analysis.
+            Connect your GitHub repository and automatically generate
+            comprehensive test cases for your code using AI-powered analysis.
           </p>
           <div className="flex justify-center gap-2 text-sm text-gray-500">
-            <Badge variant="outline" className="bg-green-50 text-green-700">React</Badge>
-            <Badge variant="outline" className="bg-blue-50 text-blue-700">Python</Badge>
-            <Badge variant="outline" className="bg-purple-50 text-purple-700">Java</Badge>
-            <Badge variant="outline" className="bg-orange-50 text-orange-700">TypeScript</Badge>
+            <Badge variant="outline" className="bg-green-50 text-green-700">
+              React
+            </Badge>
+            <Badge variant="outline" className="bg-blue-50 text-blue-700">
+              Python
+            </Badge>
+            <Badge variant="outline" className="bg-purple-50 text-purple-700">
+              Java
+            </Badge>
+            <Badge variant="outline" className="bg-orange-50 text-orange-700">
+              TypeScript
+            </Badge>
           </div>
         </div>
 
@@ -208,32 +245,53 @@ export default function TestGenerator() {
         <Card className="overflow-hidden hover-lift">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              {(['connect', 'select-files', 'analyze', 'generate-code'] as Step[]).map((step, index) => {
+              {(
+                [
+                  "connect",
+                  "select-files",
+                  "analyze",
+                  "generate-code",
+                ] as Step[]
+              ).map((step, index) => {
                 const stepNumber = getStepNumber(step);
                 const completed = isStepCompleted(step);
                 const current = step === currentStep;
-                
+
                 return (
                   <div key={step} className="flex items-center">
                     <div className="flex items-center space-x-2">
-                      <div className={`
+                      <div
+                        className={`
                         w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
-                        ${completed ? 'bg-green-500 text-white' : 
-                          current ? 'bg-blue-500 text-white' : 
-                          'bg-gray-200 text-gray-600'}
-                      `}>
-                        {completed ? <CheckCircle className="h-4 w-4" /> : stepNumber}
+                        ${
+                          completed
+                            ? "bg-green-500 text-white"
+                            : current
+                              ? "bg-blue-500 text-white"
+                              : "bg-gray-200 text-gray-600"
+                        }
+                      `}
+                      >
+                        {completed ? (
+                          <CheckCircle className="h-4 w-4" />
+                        ) : (
+                          stepNumber
+                        )}
                       </div>
-                      <span className={`text-sm font-medium ${
-                        completed || current ? 'text-gray-900' : 'text-gray-500'
-                      }`}>
-                        {step === 'connect' && 'Connect Repo'}
-                        {step === 'select-files' && 'Select Files'}
-                        {step === 'analyze' && 'Analyze & Review'}
-                        {step === 'generate-code' && 'Generate Code'}
+                      <span
+                        className={`text-sm font-medium ${
+                          completed || current
+                            ? "text-gray-900"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {step === "connect" && "Connect Repo"}
+                        {step === "select-files" && "Select Files"}
+                        {step === "analyze" && "Analyze & Review"}
+                        {step === "generate-code" && "Generate Code"}
                       </span>
                     </div>
-                    
+
                     {index < 3 && (
                       <ArrowRight className="h-4 w-4 text-gray-400 mx-4" />
                     )}
@@ -252,11 +310,11 @@ export default function TestGenerator() {
         )}
 
         {/* Step Content */}
-        {currentStep === 'connect' && (
+        {currentStep === "connect" && (
           <GitHubConnect onConnect={handleRepoConnect} />
         )}
 
-        {currentStep === 'select-files' && repoInfo && (
+        {currentStep === "select-files" && repoInfo && (
           <div className="space-y-6">
             <Card>
               <CardHeader>
@@ -271,22 +329,28 @@ export default function TestGenerator() {
                     <label htmlFor="framework" className="text-sm font-medium">
                       Test Framework:
                     </label>
-                    <Select value={selectedFramework} onValueChange={setSelectedFramework}>
+                    <Select
+                      value={selectedFramework}
+                      onValueChange={setSelectedFramework}
+                    >
                       <SelectTrigger className="w-32">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {frameworks.map((framework) => (
-                          <SelectItem key={framework.value} value={framework.value}>
+                          <SelectItem
+                            key={framework.value}
+                            value={framework.value}
+                          >
                             {framework.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <Button
-                    onClick={() => setCurrentStep('connect')}
+                    onClick={() => setCurrentStep("connect")}
                     variant="outline"
                     size="sm"
                   >
@@ -328,7 +392,7 @@ export default function TestGenerator() {
           </div>
         )}
 
-        {currentStep === 'analyze' && testCases.length > 0 && (
+        {currentStep === "analyze" && testCases.length > 0 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -339,9 +403,9 @@ export default function TestGenerator() {
                   {testCases.length} test cases generated
                 </Badge>
               </div>
-              
+
               <Button
-                onClick={() => setCurrentStep('select-files')}
+                onClick={() => setCurrentStep("select-files")}
                 variant="outline"
                 size="sm"
               >
@@ -359,23 +423,19 @@ export default function TestGenerator() {
           </div>
         )}
 
-        {currentStep === 'generate-code' && generatedCode && (
+        {currentStep === "generate-code" && generatedCode && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold">Generated Test Code</h2>
               <div className="flex gap-2">
                 <Button
-                  onClick={() => setCurrentStep('analyze')}
+                  onClick={() => setCurrentStep("analyze")}
                   variant="outline"
                   size="sm"
                 >
                   Back to Test Cases
                 </Button>
-                <Button
-                  onClick={handleReset}
-                  variant="outline"
-                  size="sm"
-                >
+                <Button onClick={handleReset} variant="outline" size="sm">
                   Start Over
                 </Button>
               </div>
@@ -392,9 +452,8 @@ export default function TestGenerator() {
         {/* Footer */}
         <div className="text-center text-sm text-gray-500 py-8">
           <p>
-            Built for Workik AI Internship Assignment • 
-            Supports React, Python, Java, and more • 
-            Generate unit, integration, and E2E tests
+            Built for Workik AI Internship Assignment • Supports React, Python,
+            Java, and more • Generate unit, integration, and E2E tests
           </p>
         </div>
       </div>

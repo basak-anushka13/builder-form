@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Copy, 
-  Download, 
-  CheckCircle, 
-  Code, 
-  Package, 
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Copy,
+  Download,
+  CheckCircle,
+  Code,
+  Package,
   Settings,
   ExternalLink,
-  Github
-} from 'lucide-react';
-import { GenerateTestCodeResponse } from '@shared/github';
+  Github,
+} from "lucide-react";
+import { GenerateTestCodeResponse } from "@shared/github";
 
 interface TestCodeDisplayProps {
   testCode: GenerateTestCodeResponse;
@@ -22,7 +22,11 @@ interface TestCodeDisplayProps {
   canCreatePR?: boolean;
 }
 
-export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: TestCodeDisplayProps) {
+export default function TestCodeDisplay({
+  testCode,
+  onCreatePR,
+  canCreatePR,
+}: TestCodeDisplayProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopyCode = async () => {
@@ -31,14 +35,14 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy code:', err);
+      console.error("Failed to copy code:", err);
     }
   };
 
   const handleDownload = () => {
-    const blob = new Blob([testCode.code], { type: 'text/plain' });
+    const blob = new Blob([testCode.code], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = testCode.filename;
     document.body.appendChild(a);
@@ -48,27 +52,27 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
   };
 
   const getLanguageFromFilename = (filename: string): string => {
-    const ext = filename.split('.').pop()?.toLowerCase();
+    const ext = filename.split(".").pop()?.toLowerCase();
     const languageMap: Record<string, string> = {
-      'js': 'javascript',
-      'jsx': 'javascript',
-      'ts': 'typescript',
-      'tsx': 'typescript',
-      'py': 'python',
-      'java': 'java',
-      'cpp': 'cpp',
-      'c': 'c',
-      'cs': 'csharp',
-      'php': 'php',
-      'rb': 'ruby',
-      'go': 'go',
-      'rs': 'rust',
-      'kt': 'kotlin',
-      'swift': 'swift',
-      'scala': 'scala',
-      'dart': 'dart',
+      js: "javascript",
+      jsx: "javascript",
+      ts: "typescript",
+      tsx: "typescript",
+      py: "python",
+      java: "java",
+      cpp: "cpp",
+      c: "c",
+      cs: "csharp",
+      php: "php",
+      rb: "ruby",
+      go: "go",
+      rs: "rust",
+      kt: "kotlin",
+      swift: "swift",
+      scala: "scala",
+      dart: "dart",
     };
-    return languageMap[ext || ''] || 'text';
+    return languageMap[ext || ""] || "text";
   };
 
   return (
@@ -79,7 +83,7 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
             <Code className="h-5 w-5" />
             Generated Test Code
           </CardTitle>
-          
+
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -99,7 +103,7 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
                 </>
               )}
             </Button>
-            
+
             <Button
               variant="outline"
               size="sm"
@@ -109,7 +113,7 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
               <Download className="h-4 w-4" />
               Download
             </Button>
-            
+
             {canCreatePR && onCreatePR && (
               <Button
                 onClick={onCreatePR}
@@ -122,11 +126,9 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
             )}
           </div>
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
-          <Badge variant="outline">
-            {testCode.filename}
-          </Badge>
+          <Badge variant="outline">{testCode.filename}</Badge>
           <Badge variant="outline">
             {getLanguageFromFilename(testCode.filename)}
           </Badge>
@@ -145,7 +147,10 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
               <Code className="h-4 w-4" />
               Test Code
             </TabsTrigger>
-            <TabsTrigger value="dependencies" className="flex items-center gap-2">
+            <TabsTrigger
+              value="dependencies"
+              className="flex items-center gap-2"
+            >
               <Package className="h-4 w-4" />
               Dependencies
             </TabsTrigger>
@@ -158,7 +163,9 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
           <TabsContent value="code" className="mt-4">
             <div className="relative">
               <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 overflow-x-auto text-sm">
-                <code className={`language-${getLanguageFromFilename(testCode.filename)}`}>
+                <code
+                  className={`language-${getLanguageFromFilename(testCode.filename)}`}
+                >
                   {testCode.code}
                 </code>
               </pre>
@@ -193,14 +200,14 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
                       </div>
                     ))}
                   </div>
-                  
+
                   <Alert>
                     <Package className="h-4 w-4" />
                     <AlertDescription>
                       <strong>Installation command:</strong>
                       <br />
                       <code className="text-sm bg-gray-100 px-2 py-1 rounded mt-1 inline-block">
-                        npm install --save-dev {testCode.dependencies.join(' ')}
+                        npm install --save-dev {testCode.dependencies.join(" ")}
                       </code>
                     </AlertDescription>
                   </Alert>
@@ -227,23 +234,35 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
                   </AlertDescription>
                 </Alert>
               )}
-              
+
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <h4 className="font-medium text-blue-900 mb-2">Next Steps:</h4>
                 <ul className="text-sm text-blue-800 space-y-1">
-                  <li>1. Save the test code to <code className="bg-blue-100 px-1 rounded">{testCode.filename}</code></li>
+                  <li>
+                    1. Save the test code to{" "}
+                    <code className="bg-blue-100 px-1 rounded">
+                      {testCode.filename}
+                    </code>
+                  </li>
                   <li>2. Install required dependencies</li>
                   <li>3. Run the tests to verify they work</li>
                   <li>4. Customize the test cases as needed</li>
-                  {canCreatePR && <li>5. Create a pull request with the generated tests</li>}
+                  {canCreatePR && (
+                    <li>5. Create a pull request with the generated tests</li>
+                  )}
                 </ul>
               </div>
-              
+
               <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.open('https://jestjs.io/docs/getting-started', '_blank')}
+                  onClick={() =>
+                    window.open(
+                      "https://jestjs.io/docs/getting-started",
+                      "_blank",
+                    )
+                  }
                   className="flex items-center gap-2"
                 >
                   <ExternalLink className="h-4 w-4" />
@@ -252,7 +271,9 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.open('https://testing-library.com/docs/', '_blank')}
+                  onClick={() =>
+                    window.open("https://testing-library.com/docs/", "_blank")
+                  }
                   className="flex items-center gap-2"
                 >
                   <ExternalLink className="h-4 w-4" />
@@ -261,7 +282,9 @@ export default function TestCodeDisplay({ testCode, onCreatePR, canCreatePR }: T
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.open('https://cypress.io/docs', '_blank')}
+                  onClick={() =>
+                    window.open("https://cypress.io/docs", "_blank")
+                  }
                   className="flex items-center gap-2"
                 >
                   <ExternalLink className="h-4 w-4" />
