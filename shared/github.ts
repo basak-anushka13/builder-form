@@ -48,3 +48,22 @@ export interface GenerateTestCodeResponse {
   setupInstructions?: string;
   filename: string;
 }
+
+export interface CreatePRRequest {
+  repository: GitHubRepository;
+  token: string;
+  testCode: string;
+  filename: string;
+  testCaseTitle: string;
+  testCaseDescription: string;
+}
+
+export interface CreatePRResponse {
+  success: boolean;
+  pullRequest: {
+    number: number;
+    url: string;
+    title: string;
+    branch: string;
+  };
+}
