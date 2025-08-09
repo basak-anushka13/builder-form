@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FormBuilder from "./pages/FormBuilder";
 import FormPreview from "./pages/FormPreview";
 import FormList from "./pages/FormList";
+import TestGenerator from "./pages/TestGenerator";
 import NotFound from "./pages/NotFound";
 
 function App() {
