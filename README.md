@@ -4,7 +4,7 @@
 
 Built with React, TypeScript, Express, and MongoDB - featuring drag-and-drop categorization, fill-in-the-blank cloze tests, and reading comprehension questions.
 
-![FormCraft Preview](https://via.placeholder.com/800x400/3B82F6/FFFFFF?text=FormCraft+Form+Builder)
+![FormCraft Preview](https://6896d95150b50d000853a616--melodic-kelpie-ab6f3c.netlify.app/)
 
 ## ✨ Features
 
