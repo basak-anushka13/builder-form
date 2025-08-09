@@ -73,8 +73,14 @@ export default function FormBuilder() {
       }
 
       setForm(savedForm);
+
+      // Show success message with navigation hint
+      setError("✅ Form saved successfully! Click 'Back' to view all your saved forms.");
+      setTimeout(() => {
+        setError(null);
+      }, 4000);
     } catch (err) {
-      setError("Failed to save form. Please try again.");
+      setError("❌ Failed to save form. Please try again.");
       console.error("Error saving form:", err);
     } finally {
       setSaving(false);
