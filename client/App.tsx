@@ -10,7 +10,8 @@ function App() {
     <BrowserRouter>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
         <Routes>
-          <Route path="/" element={<FormList />} />
+          <Route path="/" element={<TestGenerator />} />
+          <Route path="/forms" element={<FormList />} />
           <Route path="/builder" element={<FormBuilder />} />
           <Route path="/builder/:id" element={<FormBuilder />} />
           <Route path="/preview/:id" element={<FormPreview />} />
