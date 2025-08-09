@@ -155,6 +155,7 @@ export default function TestGenerator() {
     setSelectedFiles([]);
     setTestCases([]);
     setGeneratedCode(null);
+    setCurrentTestCase(null);
     setError('');
   };
 
