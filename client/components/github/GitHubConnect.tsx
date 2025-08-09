@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Github, Key } from 'lucide-react';
 import { githubService } from '@/services/github';
+import DemoMode from './DemoMode';
 
 interface GitHubConnectProps {
   onConnect: (repoInfo: { owner: string; repo: string; token?: string }) => void;
