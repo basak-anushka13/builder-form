@@ -63,10 +63,8 @@ export default function FormBuilder() {
 
       if (response.ok) {
         const savedForm = await response.json();
-        if (!id) {
-          navigate(`/builder/${savedForm._id}`);
-        }
         alert("Form saved successfully!");
+        navigate("/");
       }
     } catch (error) {
       console.error("Error saving form:", error);
