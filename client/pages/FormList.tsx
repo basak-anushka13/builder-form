@@ -2,31 +2,40 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, FileText, Eye, Edit, Trash2 } from "lucide-react";
-
-interface Form {
-  id: string;
-  title: string;
-  description: string;
-  createdAt: string;
-  questionCount: number;
-}
+import { Plus, FileText, Eye, Edit, Trash2, Loader2 } from "lucide-react";
+import { formAPI, Form } from "@/services/api";
 
 export default function FormList() {
   const [forms, setForms] = useState<Form[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Load forms from localStorage
-    const savedForms = localStorage.getItem("forms");
-    if (savedForms) {
-      setForms(JSON.parse(savedForms));
-    }
+    loadForms();
   }, []);
 
-  const deleteForm = (id: string) => {
-    const updatedForms = forms.filter(form => form.id !== id);
-    setForms(updatedForms);
-    localStorage.setItem("forms", JSON.stringify(updatedForms));
+  const loadForms = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const formsData = await formAPI.getAllForms();
+      setForms(formsData);
+    } catch (err) {
+      setError('Failed to load forms. Please try again.');
+      console.error('Error loading forms:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteForm = async (id: string) => {
+    try {
+      await formAPI.deleteForm(id);
+      setForms(prev => prev.filter(form => form.id !== id));
+    } catch (err) {
+      console.error('Error deleting form:', err);
+      setError('Failed to delete form. Please try again.');
+    }
   };
 
   return (
