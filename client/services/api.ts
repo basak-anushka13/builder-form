@@ -13,7 +13,7 @@ export interface Form {
 
 export interface Question {
   id: string;
-  type: 'categorize' | 'cloze' | 'comprehension';
+  type: "categorize" | "cloze" | "comprehension";
   title: string;
   image?: string;
   data: any;
@@ -32,7 +32,7 @@ export interface Response {
   submittedAt: string;
 }
 
-const API_BASE = '/api';
+const API_BASE = "/api";
 
 // Form API functions
 export const formAPI = {
@@ -40,7 +40,7 @@ export const formAPI = {
   async getAllForms(): Promise<Form[]> {
     const response = await fetch(`${API_BASE}/forms`);
     if (!response.ok) {
-      throw new Error('Failed to fetch forms');
+      throw new Error("Failed to fetch forms");
     }
     return response.json();
   },
@@ -49,7 +49,7 @@ export const formAPI = {
   async getFormById(id: string): Promise<Form> {
     const response = await fetch(`${API_BASE}/forms/${id}`);
     if (!response.ok) {
-      throw new Error('Failed to fetch form');
+      throw new Error("Failed to fetch form");
     }
     return response.json();
   },
@@ -57,14 +57,14 @@ export const formAPI = {
   // Create new form
   async createForm(form: Partial<Form>): Promise<Form> {
     const response = await fetch(`${API_BASE}/forms`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(form),
     });
     if (!response.ok) {
-      throw new Error('Failed to create form');
+      throw new Error("Failed to create form");
     }
     return response.json();
   },
@@ -72,14 +72,14 @@ export const formAPI = {
   // Update form
   async updateForm(id: string, form: Partial<Form>): Promise<Form> {
     const response = await fetch(`${API_BASE}/forms/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(form),
     });
     if (!response.ok) {
-      throw new Error('Failed to update form');
+      throw new Error("Failed to update form");
     }
     return response.json();
   },
@@ -87,10 +87,10 @@ export const formAPI = {
   // Delete form
   async deleteForm(id: string): Promise<void> {
     const response = await fetch(`${API_BASE}/forms/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
     if (!response.ok) {
-      throw new Error('Failed to delete form');
+      throw new Error("Failed to delete form");
     }
   },
 };
@@ -100,14 +100,14 @@ export const responseAPI = {
   // Submit form response
   async submitResponse(formId: string, answers: Answer[]): Promise<Response> {
     const response = await fetch(`${API_BASE}/responses`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ formId, answers }),
     });
     if (!response.ok) {
-      throw new Error('Failed to submit response');
+      throw new Error("Failed to submit response");
     }
     return response.json();
   },
@@ -116,13 +116,16 @@ export const responseAPI = {
   async getResponsesByForm(formId: string): Promise<Response[]> {
     const response = await fetch(`${API_BASE}/responses/form/${formId}`);
     if (!response.ok) {
-      throw new Error('Failed to fetch responses');
+      throw new Error("Failed to fetch responses");
     }
     return response.json();
   },
 
   // Get all responses
-  async getAllResponses(page: number = 1, limit: number = 20): Promise<{
+  async getAllResponses(
+    page: number = 1,
+    limit: number = 20,
+  ): Promise<{
     responses: Response[];
     pagination: {
       page: number;
@@ -131,9 +134,11 @@ export const responseAPI = {
       pages: number;
     };
   }> {
-    const response = await fetch(`${API_BASE}/responses?page=${page}&limit=${limit}`);
+    const response = await fetch(
+      `${API_BASE}/responses?page=${page}&limit=${limit}`,
+    );
     if (!response.ok) {
-      throw new Error('Failed to fetch responses');
+      throw new Error("Failed to fetch responses");
     }
     return response.json();
   },

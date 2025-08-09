@@ -26,22 +26,24 @@ class FallbackStorage {
   private responseCounter = 1;
 
   // Form operations
-  createForm(formData: Omit<StoredForm, 'id' | 'createdAt' | 'updatedAt'>): StoredForm {
+  createForm(
+    formData: Omit<StoredForm, "id" | "createdAt" | "updatedAt">,
+  ): StoredForm {
     const id = `form_${this.formCounter++}`;
     const now = new Date();
     const form: StoredForm = {
       ...formData,
       id,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
     };
     this.forms.set(id, form);
     return form;
   }
 
   getAllForms(): StoredForm[] {
-    return Array.from(this.forms.values()).sort((a, b) => 
-      b.updatedAt.getTime() - a.updatedAt.getTime()
+    return Array.from(this.forms.values()).sort(
+      (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
     );
   }
 
@@ -57,7 +59,7 @@ class FallbackStorage {
       ...existing,
       ...updates,
       id, // Ensure ID doesn't change
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
     this.forms.set(id, updated);
     return updated;
@@ -68,26 +70,28 @@ class FallbackStorage {
   }
 
   // Response operations
-  createResponse(responseData: Omit<StoredResponse, 'id' | 'submittedAt'>): StoredResponse {
+  createResponse(
+    responseData: Omit<StoredResponse, "id" | "submittedAt">,
+  ): StoredResponse {
     const id = `response_${this.responseCounter++}`;
     const response: StoredResponse = {
       ...responseData,
       id,
-      submittedAt: new Date()
+      submittedAt: new Date(),
     };
     this.responses.set(id, response);
     return response;
   }
 
   getAllResponses(): StoredResponse[] {
-    return Array.from(this.responses.values()).sort((a, b) => 
-      b.submittedAt.getTime() - a.submittedAt.getTime()
+    return Array.from(this.responses.values()).sort(
+      (a, b) => b.submittedAt.getTime() - a.submittedAt.getTime(),
     );
   }
 
   getResponsesByForm(formId: string): StoredResponse[] {
     return Array.from(this.responses.values())
-      .filter(r => r.formId === formId)
+      .filter((r) => r.formId === formId)
       .sort((a, b) => b.submittedAt.getTime() - a.submittedAt.getTime());
   }
 

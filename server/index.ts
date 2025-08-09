@@ -8,14 +8,14 @@ import {
   getFormById,
   createForm,
   updateForm,
-  deleteForm
+  deleteForm,
 } from "./routes/forms";
 import {
   submitResponse,
   getResponsesByForm,
   getResponseById,
   getAllResponses,
-  deleteResponse
+  deleteResponse,
 } from "./routes/responses";
 
 export function createServer() {
@@ -24,16 +24,16 @@ export function createServer() {
   // Attempt to connect to MongoDB (non-blocking)
   connectDB().then((connected) => {
     if (connected) {
-      console.log('🚀 Server ready with MongoDB');
+      console.log("🚀 Server ready with MongoDB");
     } else {
-      console.log('🚀 Server ready with localStorage fallback');
+      console.log("🚀 Server ready with localStorage fallback");
     }
   });
 
   // Middleware
   app.use(cors());
-  app.use(express.json({ limit: '10mb' })); // Increased limit for image uploads
-  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  app.use(express.json({ limit: "10mb" })); // Increased limit for image uploads
+  app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
   // Health check
   app.get("/api/ping", (_req, res) => {

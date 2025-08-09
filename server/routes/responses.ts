@@ -10,18 +10,18 @@ export const submitResponse: RequestHandler = async (req, res) => {
     // Validate that the form exists
     const form = await Form.findById(formId);
     if (!form) {
-      return res.status(404).json({ error: 'Form not found' });
+      return res.status(404).json({ error: "Form not found" });
     }
 
     // Get client info
     const ipAddress = req.ip || req.connection.remoteAddress;
-    const userAgent = req.get('User-Agent');
+    const userAgent = req.get("User-Agent");
 
     const response = new Response({
       formId,
       answers,
       ipAddress,
-      userAgent
+      userAgent,
     });
 
     const savedResponse = await response.save();
@@ -30,11 +30,11 @@ export const submitResponse: RequestHandler = async (req, res) => {
       id: savedResponse._id,
       formId: savedResponse.formId,
       submittedAt: savedResponse.submittedAt,
-      message: 'Response submitted successfully'
+      message: "Response submitted successfully",
     });
   } catch (error) {
-    console.error('Error submitting response:', error);
-    res.status(500).json({ error: 'Failed to submit response' });
+    console.error("Error submitting response:", error);
+    res.status(500).json({ error: "Failed to submit response" });
   }
 };
 
@@ -46,34 +46,36 @@ export const getResponsesByForm: RequestHandler = async (req, res) => {
     // Validate that the form exists
     const form = await Form.findById(formId);
     if (!form) {
-      return res.status(404).json({ error: 'Form not found' });
+      return res.status(404).json({ error: "Form not found" });
     }
 
     const responses = await Response.find({ formId })
       .sort({ submittedAt: -1 })
-      .populate('formId', 'title');
+      .populate("formId", "title");
 
     res.json(responses);
   } catch (error) {
-    console.error('Error fetching responses:', error);
-    res.status(500).json({ error: 'Failed to fetch responses' });
+    console.error("Error fetching responses:", error);
+    res.status(500).json({ error: "Failed to fetch responses" });
   }
 };
 
 // GET /api/responses/:id - Get specific response
 export const getResponseById: RequestHandler = async (req, res) => {
   try {
-    const response = await Response.findById(req.params.id)
-      .populate('formId', 'title description questions');
+    const response = await Response.findById(req.params.id).populate(
+      "formId",
+      "title description questions",
+    );
 
     if (!response) {
-      return res.status(404).json({ error: 'Response not found' });
+      return res.status(404).json({ error: "Response not found" });
     }
 
     res.json(response);
   } catch (error) {
-    console.error('Error fetching response:', error);
-    res.status(500).json({ error: 'Failed to fetch response' });
+    console.error("Error fetching response:", error);
+    res.status(500).json({ error: "Failed to fetch response" });
   }
 };
 
@@ -85,7 +87,7 @@ export const getAllResponses: RequestHandler = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const responses = await Response.find()
-      .populate('formId', 'title')
+      .populate("formId", "title")
       .sort({ submittedAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -98,12 +100,12 @@ export const getAllResponses: RequestHandler = async (req, res) => {
         page,
         limit,
         total,
-        pages: Math.ceil(total / limit)
-      }
+        pages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
-    console.error('Error fetching responses:', error);
-    res.status(500).json({ error: 'Failed to fetch responses' });
+    console.error("Error fetching responses:", error);
+    res.status(500).json({ error: "Failed to fetch responses" });
   }
 };
 
@@ -113,12 +115,12 @@ export const deleteResponse: RequestHandler = async (req, res) => {
     const response = await Response.findByIdAndDelete(req.params.id);
 
     if (!response) {
-      return res.status(404).json({ error: 'Response not found' });
+      return res.status(404).json({ error: "Response not found" });
     }
 
-    res.json({ message: 'Response deleted successfully' });
+    res.json({ message: "Response deleted successfully" });
   } catch (error) {
-    console.error('Error deleting response:', error);
-    res.status(500).json({ error: 'Failed to delete response' });
+    console.error("Error deleting response:", error);
+    res.status(500).json({ error: "Failed to delete response" });
   }
 };

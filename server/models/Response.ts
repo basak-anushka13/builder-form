@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 interface IAnswer {
   questionId: string;
@@ -17,19 +17,19 @@ export interface IResponse extends Document {
 const AnswerSchema = new Schema({
   questionId: { type: String, required: true },
   type: { type: String, required: true },
-  data: { type: Schema.Types.Mixed, required: true }
+  data: { type: Schema.Types.Mixed, required: true },
 });
 
 const ResponseSchema = new Schema({
-  formId: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'Form', 
-    required: true 
+  formId: {
+    type: Schema.Types.ObjectId,
+    ref: "Form",
+    required: true,
   },
   answers: [AnswerSchema],
   submittedAt: { type: Date, default: Date.now },
   ipAddress: { type: String },
-  userAgent: { type: String }
+  userAgent: { type: String },
 });
 
-export default mongoose.model<IResponse>('Response', ResponseSchema);
+export default mongoose.model<IResponse>("Response", ResponseSchema);

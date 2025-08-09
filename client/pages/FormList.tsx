@@ -21,8 +21,8 @@ export default function FormList() {
       const formsData = await formAPI.getAllForms();
       setForms(formsData);
     } catch (err) {
-      setError('Failed to load forms. Please try again.');
-      console.error('Error loading forms:', err);
+      setError("Failed to load forms. Please try again.");
+      console.error("Error loading forms:", err);
     } finally {
       setLoading(false);
     }
@@ -31,10 +31,10 @@ export default function FormList() {
   const deleteForm = async (id: string) => {
     try {
       await formAPI.deleteForm(id);
-      setForms(prev => prev.filter(form => form.id !== id));
+      setForms((prev) => prev.filter((form) => form.id !== id));
     } catch (err) {
-      console.error('Error deleting form:', err);
-      setError('Failed to delete form. Please try again.');
+      console.error("Error deleting form:", err);
+      setError("Failed to delete form. Please try again.");
     }
   };
 
@@ -86,12 +86,18 @@ export default function FormList() {
             <div className="w-16 h-16 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <FileText className="w-8 h-8 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to FormCraft</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Welcome to FormCraft
+            </h2>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Build custom forms with advanced question types including Categorize, Cloze, and Comprehension questions.
+              Build custom forms with advanced question types including
+              Categorize, Cloze, and Comprehension questions.
             </p>
             <Link to="/builder">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+              >
                 <Plus className="w-5 h-5 mr-2" />
                 Create Your First Form
               </Button>
@@ -108,16 +114,20 @@ export default function FormList() {
                 </Button>
               </Link>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {forms.map((form) => (
-                <Card key={form.id} className="hover:shadow-lg transition-all duration-200 border-0 shadow-md bg-white">
+                <Card
+                  key={form.id}
+                  className="hover:shadow-lg transition-all duration-200 border-0 shadow-md bg-white"
+                >
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg font-semibold text-gray-900 line-clamp-2">
                       {form.title || "Untitled Form"}
                     </CardTitle>
                     <p className="text-sm text-gray-500">
-                      {form.questionCount} question{form.questionCount !== 1 ? 's' : ''}
+                      {form.questionCount} question
+                      {form.questionCount !== 1 ? "s" : ""}
                     </p>
                   </CardHeader>
                   <CardContent className="pt-0">
