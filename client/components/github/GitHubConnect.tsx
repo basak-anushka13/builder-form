@@ -13,7 +13,7 @@ interface GitHubConnectProps {
   onStartDemo?: () => void;
 }
 
-export default function GitHubConnect({ onConnect }: GitHubConnectProps) {
+export default function GitHubConnect({ onConnect, onStartDemo }: GitHubConnectProps) {
   const [repoUrl, setRepoUrl] = useState('');
   const [token, setToken] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
