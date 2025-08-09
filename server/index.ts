@@ -21,8 +21,14 @@ import {
 export function createServer() {
   const app = express();
 
-  // Connect to MongoDB
-  connectDB();
+  // Attempt to connect to MongoDB (non-blocking)
+  connectDB().then((connected) => {
+    if (connected) {
+      console.log('🚀 Server ready with MongoDB');
+    } else {
+      console.log('🚀 Server ready with localStorage fallback');
+    }
+  });
 
   // Middleware
   app.use(cors());
