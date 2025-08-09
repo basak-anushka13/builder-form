@@ -56,6 +56,10 @@ export function createServer() {
   app.get("/api/responses/:id", getResponseById);
   app.delete("/api/responses/:id", deleteResponse);
 
+  // GitHub routes
+  app.post("/api/github/analyze", analyzeFiles);
+  app.post("/api/github/generate-code", generateTestCode);
+
   // Legacy demo route
   app.get("/api/demo", handleDemo);
 
