@@ -168,13 +168,25 @@ export default function FormBuilder() {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <Button variant="outline" onClick={() => navigate(`/preview/${form.id}`)}>
+              <Button
+                variant="outline"
+                onClick={() => navigate(`/preview/${form.id}`)}
+                disabled={!form.id}
+              >
                 <Eye className="w-4 h-4 mr-2" />
                 Preview
               </Button>
-              <Button onClick={saveForm} className="bg-blue-600 hover:bg-blue-700">
-                <Save className="w-4 h-4 mr-2" />
-                Save Form
+              <Button
+                onClick={saveForm}
+                disabled={saving}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                {saving ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4 mr-2" />
+                )}
+                {saving ? 'Saving...' : 'Save Form'}
               </Button>
             </div>
           </div>
