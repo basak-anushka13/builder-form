@@ -138,15 +138,35 @@ export default function GitHubConnect({ onConnect }: GitHubConnectProps) {
           )}
         </Button>
 
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <h4 className="font-medium text-blue-900 mb-2">What this tool can do:</h4>
-          <ul className="text-sm text-blue-800 space-y-1">
-            <li>• Browse and analyze your repository files</li>
-            <li>• Generate test cases for different testing frameworks</li>
-            <li>• Create unit, integration, and E2E test suggestions</li>
-            <li>• Generate ready-to-use test code</li>
-            <li>• Support for React, Python, Java, and more</li>
-          </ul>
+        <div className="space-y-4">
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h4 className="font-medium text-blue-900 mb-2">What this tool can do:</h4>
+            <ul className="text-sm text-blue-800 space-y-1">
+              <li>• Browse and analyze your repository files</li>
+              <li>• Generate test cases for different testing frameworks</li>
+              <li>• Create unit, integration, and E2E test suggestions</li>
+              <li>• Generate ready-to-use test code</li>
+              <li>• Support for React, Python, Java, and more</li>
+            </ul>
+          </div>
+
+          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+            <h4 className="font-medium text-green-900 mb-2">Try these demo repositories:</h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center justify-between">
+                <code className="text-green-800">facebook/react</code>
+                <Badge variant="outline" className="text-xs bg-green-100 text-green-700">React</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <code className="text-green-800">microsoft/vscode</code>
+                <Badge variant="outline" className="text-xs bg-blue-100 text-blue-700">TypeScript</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <code className="text-green-800">django/django</code>
+                <Badge variant="outline" className="text-xs bg-yellow-100 text-yellow-700">Python</Badge>
+              </div>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
