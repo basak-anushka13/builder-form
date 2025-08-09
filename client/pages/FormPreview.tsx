@@ -75,20 +75,20 @@ export default function FormPreview() {
     ));
   };
 
-  const handleSubmit = () => {
-    // Save responses
-    const submission = {
-      formId: id,
-      answers,
-      submittedAt: new Date().toISOString()
-    };
+  const handleSubmit = async () => {
+    if (!id) return;
 
-    const savedResponses = localStorage.getItem("responses");
-    const responses = savedResponses ? JSON.parse(savedResponses) : [];
-    responses.push(submission);
-    localStorage.setItem("responses", JSON.stringify(responses));
-
-    setSubmitted(true);
+    try {
+      setSubmitting(true);
+      setError(null);
+      await responseAPI.submitResponse(id, answers);
+      setSubmitted(true);
+    } catch (err) {
+      setError('Failed to submit form. Please try again.');
+      console.error('Error submitting form:', err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleCategorizeItemDrop = (questionId: string, item: string, category: string) => {
