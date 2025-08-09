@@ -10,6 +10,7 @@ import DemoMode from './DemoMode';
 
 interface GitHubConnectProps {
   onConnect: (repoInfo: { owner: string; repo: string; token?: string }) => void;
+  onStartDemo?: () => void;
 }
 
 export default function GitHubConnect({ onConnect }: GitHubConnectProps) {
