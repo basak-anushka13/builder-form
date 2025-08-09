@@ -9,13 +9,19 @@ Built with React, TypeScript, Express, and MongoDB - featuring drag-and-drop cat
 ## ✨ Features
 
 ### 🎯 **Advanced Question Types**
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 - **Categorize**: Drag-and-drop items into categories with visual feedback
 - **Cloze**: Fill-in-the-blank questions with dynamic text parsing
 - **Comprehension**: Reading passages with multiple question formats (text, multiple choice, true/false)
 
 ### 🛠️ **Builder Features**
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 - **Visual Form Builder**: Intuitive drag-and-drop interface
 - **Real-time Preview**: See questions as you build them
 - **Image Support**: Upload images for forms and individual questions
@@ -23,7 +29,10 @@ Built with React, TypeScript, Express, and MongoDB - featuring drag-and-drop cat
 - **Response Tracking**: Collect and analyze form submissions
 
 ### 🎨 **Modern UI/UX**
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 - **Responsive Design**: Works perfectly on all screen sizes
 - **Beautiful Interface**: Clean, professional design with smooth animations
 - **Dark/Light Theme**: Adaptive styling with gradient backgrounds
@@ -32,7 +41,10 @@ Built with React, TypeScript, Express, and MongoDB - featuring drag-and-drop cat
 ## 🏗️ Tech Stack
 
 ### Frontend
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 - **React 18** with TypeScript
 - **Vite** for fast development and building
 - **TailwindCSS 3** for styling
@@ -41,7 +53,10 @@ Built with React, TypeScript, Express, and MongoDB - featuring drag-and-drop cat
 - **Lucide React** for icons
 
 ### Backend
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 - **Express.js** with TypeScript
 - **MongoDB** with Mongoose ODM
 - **CORS** enabled for cross-origin requests
@@ -50,27 +65,40 @@ Built with React, TypeScript, Express, and MongoDB - featuring drag-and-drop cat
 ## 🚀 Quick Start
 
 ### Prerequisites
+<<<<<<< HEAD
 
 - Node.js 16+
+=======
+- Node.js 16+ 
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 - MongoDB (optional - falls back to in-memory storage)
 
 ### Installation
 
 1. **Clone the repository**
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
    ```bash
    git clone <repository-url>
    cd formcraft
    ```
 
 2. **Install dependencies**
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
    ```bash
    npm install
    ```
 
 3. **Set up environment variables** (optional)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
    ```bash
    # For MongoDB connection (optional)
    export MONGODB_URI="mongodb://localhost:27017/formcraft"
@@ -79,7 +107,10 @@ Built with React, TypeScript, Express, and MongoDB - featuring drag-and-drop cat
    ```
 
 4. **Start the development server**
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
    ```bash
    npm run dev
    ```
@@ -102,11 +133,15 @@ Built with React, TypeScript, Express, and MongoDB - featuring drag-and-drop cat
 ### Question Types Guide
 
 #### 🏷️ Categorize Questions
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 ```
 Categories: Animals, Plants, Minerals
 Items: Dog, Rose, Diamond, Cat, Oak, Gold
 ```
+<<<<<<< HEAD
 
 Users drag items into the correct categories.
 
@@ -120,6 +155,17 @@ Users fill in the blanks with correct answers.
 
 #### 📚 Comprehension Questions
 
+=======
+Users drag items into the correct categories.
+
+#### ✏️ Cloze Questions
+```
+Text: "The [capital] of France is [Paris]."
+```
+Users fill in the blanks with correct answers.
+
+#### 📚 Comprehension Questions
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 ```
 Passage: "Your reading text here..."
 Questions:
@@ -138,7 +184,10 @@ Questions:
 ## 🗄️ Database Schema
 
 ### Forms Collection
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 ```javascript
 {
   title: String,
@@ -157,7 +206,10 @@ Questions:
 ```
 
 ### Responses Collection
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 ```javascript
 {
   formId: ObjectId,
@@ -175,7 +227,10 @@ Questions:
 ## 🔧 API Endpoints
 
 ### Forms
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 - `GET /api/forms` - List all forms
 - `GET /api/forms/:id` - Get specific form
 - `POST /api/forms` - Create new form
@@ -183,7 +238,10 @@ Questions:
 - `DELETE /api/forms/:id` - Delete form
 
 ### Responses
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 - `POST /api/responses` - Submit form response
 - `GET /api/responses` - List all responses (paginated)
 - `GET /api/responses/form/:formId` - Get responses for specific form
@@ -193,7 +251,10 @@ Questions:
 ## 🛠️ Development
 
 ### Project Structure
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 ```
 ├── client/                 # React frontend
 │   ├── components/ui/      # Reusable UI components
@@ -229,7 +290,10 @@ npm run start
 ## 🚀 Deployment
 
 ### Environment Variables
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 ```bash
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/formcraft
 PORT=8080
@@ -239,21 +303,30 @@ NODE_ENV=production
 ### Deploy to Cloud Platforms
 
 #### Netlify/Vercel
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 1. Connect your GitHub repository
 2. Set build command: `npm run build`
 3. Set publish directory: `dist`
 4. Add environment variables in platform settings
 
 #### Railway/Render
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 1. Connect repository
 2. Set start command: `npm start`
 3. Add environment variables
 4. Deploy
 
 #### Docker
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
@@ -299,4 +372,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 **Built with ❤️ for educators, researchers, and survey creators.**
 
+<<<<<<< HEAD
 _FormCraft makes creating sophisticated assessments as easy as building with blocks._
+=======
+*FormCraft makes creating sophisticated assessments as easy as building with blocks.*
+>>>>>>> 1ef88155b3e8985854daf9e75513c9da40919b3a
