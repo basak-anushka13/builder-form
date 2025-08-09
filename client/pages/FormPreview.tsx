@@ -366,6 +366,19 @@ export default function FormPreview() {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-red-800">{error}</p>
+          </div>
+        )}
+
+        {loading ? (
+          <div className="text-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
+            <p className="text-gray-600">Loading form...</p>
+          </div>
+        ) : form ? (
+          <>
         {/* Form Header */}
         <div className="mb-8">
           {form.headerImage && (
@@ -416,14 +429,24 @@ export default function FormPreview() {
 
         {/* Submit Button */}
         <div className="mt-8 text-center">
-          <Button 
+          <Button
             onClick={handleSubmit}
+            disabled={submitting}
             size="lg"
             className="bg-green-600 hover:bg-green-700 text-white px-8"
           >
-            Submit Form
+            {submitting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              'Submit Form'
+            )}
           </Button>
         </div>
+          </>
+        ) : null}
       </div>
     </div>
   );
