@@ -4,83 +4,81 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  ArrowLeft, 
-  Plus, 
-  Save, 
-  Eye, 
+import {
+  ArrowLeft,
+  Plus,
+  Save,
+  Eye,
   FileText,
   Image as ImageIcon,
   GripVertical,
   Trash2,
-  Settings
+  Settings,
+  Loader2
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import CategorizeQuestion from "@/components/questions/CategorizeQuestion";
 import ClozeQuestion from "@/components/questions/ClozeQuestion";
 import ComprehensionQuestion from "@/components/questions/ComprehensionQuestion";
-
-export interface Question {
-  id: string;
-  type: 'categorize' | 'cloze' | 'comprehension';
-  title: string;
-  image?: string;
-  data: any;
-}
-
-export interface Form {
-  id: string;
-  title: string;
-  description: string;
-  headerImage?: string;
-  questions: Question[];
-  createdAt: string;
-  updatedAt: string;
-}
+import { formAPI, Form, Question } from "@/services/api";
 
 export default function FormBuilder() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [form, setForm] = useState<Form>({
-    id: id || `form_${Date.now()}`,
+    id: '',
     title: "",
     description: "",
     questions: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   });
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
-      const savedForms = localStorage.getItem("forms");
-      if (savedForms) {
-        const forms = JSON.parse(savedForms);
-        const existingForm = forms.find((f: Form) => f.id === id);
-        if (existingForm) {
-          setForm(existingForm);
-        }
-      }
+      loadForm(id);
     }
   }, [id]);
 
-  const saveForm = () => {
-    const savedForms = localStorage.getItem("forms");
-    const forms = savedForms ? JSON.parse(savedForms) : [];
-    
-    const updatedForm = {
-      ...form,
-      updatedAt: new Date().toISOString()
-    };
-
-    const existingIndex = forms.findIndex((f: Form) => f.id === form.id);
-    if (existingIndex >= 0) {
-      forms[existingIndex] = updatedForm;
-    } else {
-      forms.push(updatedForm);
+  const loadForm = async (formId: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const formData = await formAPI.getFormById(formId);
+      setForm(formData);
+    } catch (err) {
+      setError('Failed to load form. Please try again.');
+      console.error('Error loading form:', err);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    localStorage.setItem("forms", JSON.stringify(forms));
-    setForm(updatedForm);
+  const saveForm = async () => {
+    try {
+      setSaving(true);
+      setError(null);
+
+      let savedForm;
+      if (id) {
+        // Update existing form
+        savedForm = await formAPI.updateForm(id, form);
+      } else {
+        // Create new form
+        savedForm = await formAPI.createForm(form);
+        navigate(`/builder/${savedForm.id}`, { replace: true });
+      }
+
+      setForm(savedForm);
+    } catch (err) {
+      setError('Failed to save form. Please try again.');
+      console.error('Error saving form:', err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const addQuestion = (type: Question['type']) => {
