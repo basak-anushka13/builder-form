@@ -122,7 +122,6 @@ export default function TestGenerator() {
     }
 
     try {
-      const testCase = testCases.find(tc => tc.id === 'current'); // You'd need to track which test case was generated
       const response = await fetch('/api/github/create-pr', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
