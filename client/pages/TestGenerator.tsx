@@ -114,9 +114,38 @@ export default function TestGenerator() {
   };
 
   const handleCreatePR = async () => {
-    // This would integrate with GitHub API to create a pull request
-    // For now, we'll show a placeholder
-    alert('PR creation feature would be implemented here!');
+    if (!repoInfo || !generatedCode || !repoInfo.token) {
+      setError('GitHub token is required to create a pull request');
+      return;
+    }
+
+    try {
+      const testCase = testCases.find(tc => tc.id === 'current'); // You'd need to track which test case was generated
+      const response = await fetch('/api/github/create-pr', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          repository: { owner: repoInfo.owner, repo: repoInfo.repo },
+          token: repoInfo.token,
+          testCode: generatedCode.code,
+          filename: generatedCode.filename,
+          testCaseTitle: testCase?.title || 'Automated Test Cases',
+          testCaseDescription: testCase?.description || 'AI-generated test cases for repository files',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to create PR: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      // Show success message and open PR
+      alert(`Pull request created successfully! PR #${result.pullRequest.number}`);
+      window.open(result.pullRequest.url, '_blank');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create pull request');
+    }
   };
 
   const handleReset = () => {
