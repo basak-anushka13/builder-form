@@ -1,18 +1,18 @@
-import { Handler } from '@netlify/functions'
-import serverless from 'serverless-http'
-import { createServer } from '../../server/index'
+import { Handler } from "@netlify/functions";
+import serverless from "serverless-http";
+import { createServer } from "../../server/index";
 
-let handler: Handler
+let handler: Handler;
 
 const getHandler = async (): Promise<Handler> => {
   if (!handler) {
-    const app = await createServer()
-    handler = serverless(app)
+    const app = await createServer();
+    handler = serverless(app);
   }
-  return handler
-}
+  return handler;
+};
 
 export const handler: Handler = async (event, context) => {
-  const serverlessHandler = await getHandler()
-  return serverlessHandler(event, context)
-}
+  const serverlessHandler = await getHandler();
+  return serverlessHandler(event, context);
+};
