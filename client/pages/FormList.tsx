@@ -1,60 +1,66 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface Form {
-  _id: string
-  title: string
-  description?: string
-  fields: any[]
-  createdAt: string
-  updatedAt: string
+  _id: string;
+  title: string;
+  description?: string;
+  fields: any[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function FormList() {
-  const [forms, setForms] = useState<Form[]>([])
-  const [loading, setLoading] = useState(true)
+  const [forms, setForms] = useState<Form[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchForms()
-  }, [])
+    fetchForms();
+  }, []);
 
   const fetchForms = async () => {
     try {
-      const response = await fetch('/api/forms')
+      const response = await fetch("/api/forms");
       if (response.ok) {
-        const data = await response.json()
-        setForms(data)
+        const data = await response.json();
+        setForms(data);
       }
     } catch (error) {
-      console.error('Error fetching forms:', error)
+      console.error("Error fetching forms:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const deleteForm = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this form?')) return
-    
+    if (!confirm("Are you sure you want to delete this form?")) return;
+
     try {
       const response = await fetch(`/api/forms/${id}`, {
-        method: 'DELETE'
-      })
+        method: "DELETE",
+      });
       if (response.ok) {
-        setForms(forms.filter(form => form._id !== id))
+        setForms(forms.filter((form) => form._id !== id));
       }
     } catch (error) {
-      console.error('Error deleting form:', error)
+      console.error("Error deleting form:", error);
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">Loading forms...</div>
       </div>
-    )
+    );
   }
 
   return (
@@ -85,22 +91,28 @@ export default function FormList() {
               <CardHeader>
                 <CardTitle className="line-clamp-1">{form.title}</CardTitle>
                 <CardDescription className="line-clamp-2">
-                  {form.description || 'No description'}
+                  {form.description || "No description"}
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-1">
                 <p className="text-sm text-muted-foreground mb-4">
-                  {form.fields.length} field{form.fields.length !== 1 ? 's' : ''}
+                  {form.fields.length} field
+                  {form.fields.length !== 1 ? "s" : ""}
                 </p>
                 <div className="flex gap-2">
                   <Button asChild size="sm" className="flex-1">
                     <Link to={`/builder/${form._id}`}>Edit</Link>
                   </Button>
-                  <Button asChild variant="outline" size="sm" className="flex-1">
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                  >
                     <Link to={`/preview/${form._id}`}>Preview</Link>
                   </Button>
-                  <Button 
-                    variant="destructive" 
+                  <Button
+                    variant="destructive"
                     size="sm"
                     onClick={() => deleteForm(form._id)}
                   >
@@ -113,5 +125,5 @@ export default function FormList() {
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,6 +1,12 @@
-import { Link } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function Index() {
   return (
@@ -29,7 +35,7 @@ export default function Index() {
             </CardDescription>
           </CardHeader>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Real-time Preview</CardTitle>
@@ -38,7 +44,7 @@ export default function Index() {
             </CardDescription>
           </CardHeader>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Form Analytics</CardTitle>
@@ -49,5 +55,5 @@ export default function Index() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

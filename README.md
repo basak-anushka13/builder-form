@@ -30,23 +30,27 @@ A modern, drag-and-drop form builder application built with React, TypeScript, a
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd formcraft
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. (Optional) Set up MongoDB:
+
 ```bash
 # Create .env file
 echo "MONGODB_URI=your_mongodb_connection_string" > .env
 ```
 
 4. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -80,18 +84,21 @@ The application will be available at `http://localhost:8080`
 ## Features Overview
 
 ### Form Builder
+
 - Drag and drop interface for adding form fields
 - Configure field properties (label, placeholder, required, etc.)
 - Support for multiple field types
 - Real-time form preview
 
 ### Form Management
+
 - View all created forms
 - Edit existing forms
 - Delete forms
 - Form metadata (title, description, creation date)
 
 ### Response Collection
+
 - Collect form submissions
 - View submission data
 - Export capabilities (planned)

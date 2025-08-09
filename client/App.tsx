@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Index from './pages/Index'
-import FormBuilder from './pages/FormBuilder'
-import FormList from './pages/FormList'
-import FormPreview from './pages/FormPreview'
-import NotFound from './pages/NotFound'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import FormBuilder from "./pages/FormBuilder";
+import FormList from "./pages/FormList";
+import FormPreview from "./pages/FormPreview";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
         </Routes>
       </div>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
